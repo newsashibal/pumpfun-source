@@ -4,8 +4,16 @@
   "asset": "scripts/pump_validate_parallel.py",
   "base_revision": "558606891441ae65502f737b71676fa2dbc79cc0",
   "before_sha256": "6845bdf4cd7c278c421021756465c039e88e443d5907edfbbfae1662e972f8fc",
-  "after_sha256": "39957b7ae4a3318912800b5568026efcee18ffa87102950f043546b8c8a609ce",
-  "reason": "Admit all active publication paths before writes and include deployed.so in current captured-loader receipt inputs.",
+  "after_sha256": "336fde0d9336d9a923e0270d04c3cc74078012b1b282253aa33c60c6336d4747",
+  "reason": "Share input identity admission across serial and parallel aggregate/suite publications; include deployed.so in current captured-loader receipt inputs.",
   "historical_bindings": "Preserved unchanged; this proposal does not retroactively requalify historical receipts.",
-  "evidence": "reconstruction/tooling/parallel-input-preservation-20261030/results.json"
+  "evidence": "reconstruction/tooling/parallel-input-preservation-20261030/results.json",
+  "initial_parallel_fix_sha256": "39957b7ae4a3318912800b5568026efcee18ffa87102950f043546b8c8a609ce",
+  "additional_assets": [
+    {
+      "asset": "scripts/pump_validate_all.py",
+      "before_sha256": "e98cca4b94fd02694f6c16a95da3390f3eab88bd4cd9fd72c0fcab98e555080b",
+      "after_sha256": "e26edfffd275ef8ca033ec05e8ba509502549ceee766bc419d8d11e47aa37bcc"
+    }
+  ]
 }

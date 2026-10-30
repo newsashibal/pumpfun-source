@@ -112,8 +112,8 @@
       "case": "runner",
       "exit": 1,
       "changed": false,
-      "before_sha256": "39957b7ae4a3318912800b5568026efcee18ffa87102950f043546b8c8a609ce",
-      "after_sha256": "39957b7ae4a3318912800b5568026efcee18ffa87102950f043546b8c8a609ce",
+      "before_sha256": "336fde0d9336d9a923e0270d04c3cc74078012b1b282253aa33c60c6336d4747",
+      "after_sha256": "336fde0d9336d9a923e0270d04c3cc74078012b1b282253aa33c60c6336d4747",
       "diagnostic": "validation output aliases a bound input"
     },
     {
@@ -149,7 +149,7 @@
   },
   "tests": {
     "test_tooling": {
-      "tests": 187,
+      "tests": 192,
       "passed": true
     },
     "verify_evidence": {
@@ -161,12 +161,45 @@
       "passed": true
     },
     "test_input_preservation": {
-      "tests": 6,
+      "tests": 7,
       "passed": true,
       "platforms": [
         "Linux Python 3.12.14",
         "Windows Python 3.12.14"
       ]
     }
-  }
+  },
+  "serial": {
+    "positive_control": {
+      "scope": "Actual unchanged serial entry point intentionally stopped after first completed production suite; not a 44-suite pass",
+      "cases": 66,
+      "mismatches": 0,
+      "candidate_unchanged": true,
+      "receipt_sha256": "0ebe3feca9a0de54edb425ed94416f10e0cf17b89f6e2cae3d4a69308d5f0632"
+    },
+    "before": {
+      "exit": 1,
+      "candidate_changed": true,
+      "before_sha256": "f8e03b83699a723a85e1b1aa22eb857987a65a85c5e14958e7c00b1287d37f46",
+      "after_sha256": "0ebe3feca9a0de54edb425ed94416f10e0cf17b89f6e2cae3d4a69308d5f0632",
+      "retained_first_suite_cases": 66,
+      "diagnostic": "invalid account data for instruction after candidate overwrite"
+    },
+    "after": {
+      "exit": 1,
+      "candidate_changed": false,
+      "before_sha256": "f8e03b83699a723a85e1b1aa22eb857987a65a85c5e14958e7c00b1287d37f46",
+      "after_sha256": "f8e03b83699a723a85e1b1aa22eb857987a65a85c5e14958e7c00b1287d37f46",
+      "retained_first_suite_cases": null,
+      "diagnostic": "validation output aliases a bound input"
+    }
+  },
+  "final_shared_guard_revalidation": {
+    "cases": 2605,
+    "suites": 11,
+    "diagnostic_log_cases": 2605,
+    "diagnostic_mismatches": 0,
+    "sha256": "7742aab667027d4c1403b10c07e97eddde397db79b07be36effcd04627d40b7b"
+  },
+  "initial_parallel_execution_runner_sha256": "39957b7ae4a3318912800b5568026efcee18ffa87102950f043546b8c8a609ce"
 }

@@ -1,4 +1,4 @@
-# Preserve parallel validator inputs
+# Preserve validation inputs
 
 `pump_validate_parallel.py` previously checked bound inputs before publishing
 the aggregate report, but did not check whether an output *was* one of those
@@ -15,6 +15,14 @@ set includes the build-bound files, compiled sources, selected suite scripts,
 saved report and saved loader receipts. Canonical paths, symlinks (including
 parent-directory links) and existing hardlinks are compared. An unrelated
 existing report can still be replaced.
+
+The serial `pump_validate_all.py` runner had the same write-after-check problem
+in its per-suite retained reports. It now uses the same identity guard, before
+the first subprocess, for its aggregate and all 44 retained suite destinations.
+Its candidate, captured original, runner, diagnostic helper, suite scripts and
+source Rust/manifest inputs are protected. The parallel runner delegates to
+this shared guard; absent historical suite paths remain protected by pathname
+without comparing filesystem identities against nonexistent files.
 
 The same change synchronizes the loader receipt input inventory with the
 current wrapper from PR #2422: `deployed.so` is already protected by both tools
@@ -48,6 +56,21 @@ all 2,605 cases and 11 suites with zero diagnostic mismatches. All seven after
 aliases exited one before publication, with unchanged input hashes. The retained
 JSON summary records these before/after hashes and results; full runtime
 reports contain local absolute paths and are not republished here.
+The full parallel execution preceded extracting the shared identity guard;
+the final shared-guard code passed a fresh revalidation of that 2,605-case
+report and all seven alias checks. Both runner versions are recorded explicitly.
+
+The serial reproduction used the unchanged production suite list and actual
+published candidate. A hardlink from `serial-hardlink.json.gz.suites/volume.json.gz`
+to the private candidate let the first production suite pass 66 cases, then
+replaced the ELF with its gzip report. The next real suite failed to load the
+corrupted candidate. The patched runner rejects that alias before running any
+suite and preserves the candidate. A noncolliding patched serial invocation
+completed the first 66-case suite; the control was deliberately stopped there.
+This is **not** a claim that all 44 serial suites passed. `results.json` records
+the bounded serial control and destructive-before/protected-after hashes.
+The CLI regression also checks a collision in the last retained suite,
+demonstrating admission occurs before the first subprocess.
 
 ## Repeat
 
@@ -81,6 +104,16 @@ generate a **fresh** control, and repeat. Expect all seven aliases to fail with
 `validation output aliases a bound input`, with all input hashes unchanged.
 Do not use repository originals for destructive before reproduction.
 
+For the serial negative case, hardlink the disposable candidate to
+`work/alias-proof/serial-hardlink.json.gz.suites/volume.json.gz`, then run
+`scripts/pump_validate_all.py` with the same `--candidate` and
+`--source-directory` and `--output work/alias-proof/serial-hardlink.json.gz`.
+Before the fix it overwrites the candidate after 66 real volume cases; after
+the fix it rejects the output before any suite. Restore the private candidate
+and remove the test hardlink after each run. The noncolliding serial control
+uses a fresh output and is intentionally stopped after retaining volume's
+66-case report; it does not change the runner's suite list or case expectations.
+
 Fast filesystem regression tests (including all active sidecars) are in
 `test_input_preservation.py` and run in the evidence CI job. Required checks are
 `python scripts/verify_evidence.py`, `python scripts/test_tooling.py`,
@@ -89,4 +122,4 @@ Fast filesystem regression tests (including all active sidecars) are in
 This is input preservation for a finite local verification workflow. It is not
 a filesystem race defense, full program equivalence or security clearance.
 Historical captures, checkpoint bindings and previous research packets are
-unchanged; see `proposed-asset-transition.json` for the new runner binding.
+unchanged; see `proposed-asset-transition.json` for both new runner bindings.
