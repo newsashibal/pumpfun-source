@@ -52,6 +52,12 @@ class ParallelInputPreservationTests(unittest.TestCase):
                 for path, contents in before.items():
                     self.assertEqual(path.read_bytes(), contents)
 
+    def symlink(self, link, target, *, directory=False):
+        try:
+            link.symlink_to(target, target_is_directory=directory)
+        except (OSError, NotImplementedError) as error:
+            self.skipTest(f'symlinks are unavailable: {error}')
+
     def test_only_active_publications_are_selected(self):
         output = Path('packet/result.json.gz')
         suites = ('buy', 'quote_control')
@@ -86,7 +92,7 @@ class ParallelInputPreservationTests(unittest.TestCase):
                 original = b'preserve the bound input bytes\n'
                 protected.write_bytes(original)
                 if kind == 'symlink':
-                    destination.symlink_to(protected)
+                    self.symlink(destination, protected)
                 elif kind == 'hardlink':
                     os.link(protected, destination)
                 with self.assertRaisesRegex(ValueError, 'validation output aliases a bound input'):
@@ -113,7 +119,7 @@ class ParallelInputPreservationTests(unittest.TestCase):
             protected = actual / 'result.json.gz'
             protected.write_bytes(b'retained input')
             alias = root / 'alias'
-            alias.symlink_to(actual, target_is_directory=True)
+            self.symlink(alias, actual, directory=True)
             for destination, source in ((alias / protected.name, protected),
                                         (protected, alias / protected.name)):
                 with self.subTest(destination=destination), self.assertRaises(ValueError):
